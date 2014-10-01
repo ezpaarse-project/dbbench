@@ -20,7 +20,6 @@ exports.get = function (id, callback) {
   if (entry) {
     callback(null, entry);
   } else {
-    console.log(id)
     callback(new Error('ID not found'));
   }
 };
