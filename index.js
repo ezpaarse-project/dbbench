@@ -122,23 +122,25 @@ init(function () {
     bench(function (err, result) {
       console.log('Bench finished\n');
 
+      var queriesPerSecond = Math.round(result.queries / argv.duration);
+
       console.log('Dataset');
       console.log('  Inserted: \t%d', res.inserted);
       console.log('  Failed: \t%d', res.errors);
-      console.log('  Time: \t%dms', res.elapsed);
+      console.log('  Time: \t%d ms', res.elapsed);
 
       console.log('Queries');
-      console.log('  Successful: \t%d', result.queries);
+      console.log('  Successful: \t%d (%d per second)', result.queries, queriesPerSecond);
       console.log('  Failed: \t%d', result.errors);
 
-      console.log('Query time')
-      console.log('  Minimum: \t%dms', result.time.min);
-      console.log('  Maximum: \t%dms', result.time.max);
-      console.log('  Average: \t%dms', result.time.average);
+      console.log('Queries time')
+      console.log('  Minimum: \t%d ms', result.time.min);
+      console.log('  Maximum: \t%d ms', result.time.max);
+      console.log('  Average: \t%d ms', result.time.average);
 
       console.log('Memory usage')
-      console.log('  Minimum: \t%dMiB', result.memory.min);
-      console.log('  Maximum: \t%dMiB', result.memory.max);
+      console.log('  Minimum: \t%d MiB', result.memory.min);
+      console.log('  Maximum: \t%d MiB', result.memory.max);
     });
   });
 });
