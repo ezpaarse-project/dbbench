@@ -4,7 +4,7 @@ var fs        = require('fs');
 var path      = require('path');
 var Datastore = require('nedb');
 
-var dbFile    = path.join(__dirname, 'base.db')
+var dbFile    = path.join(__dirname, 'base.db');
 var db        = new Datastore({ filename: dbFile });
 
 exports.name = 'NeDB';
