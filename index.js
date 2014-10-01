@@ -8,7 +8,7 @@ var argv = require('minimist')(process.argv.slice(2), {
   },
   default: {
     s: 5000,
-    d: 5000
+    d: 5
   }
 });
 
@@ -97,7 +97,7 @@ function bench(callback) {
     });
   })();
 
-  setTimeout(function() { stop = true; }, argv.duration);
+  setTimeout(function() { stop = true; }, argv.duration * 1000);
 };
 
 console.log('[ %s ]', db.name);
