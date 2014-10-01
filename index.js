@@ -20,7 +20,7 @@ if (!argv.db) {
 var faker = require('faker');
 var db    = require('./plug/' + argv.db + '/index.js');
 
-var id = 1;
+var id = 0;
 
 function init(callback) {
   db.init(callback);
@@ -32,7 +32,7 @@ function generate(callback) {
   var errors    = 0;
 
   (function insert() {
-    if (id > argv.size) {
+    if (id >= argv.size) {
       var elapsed = process.hrtime(startTime);
 
       return callback(null, {
@@ -65,8 +65,8 @@ function bench(callback) {
   var minTime     = Infinity;
   var averageTime = 0;
 
-  var query = function () {
-    var id = 'identifier' + (Math.round(Math.random() * argv.size));
+  (function query() {
+    var id = 'identifier' + (Math.floor(Math.random() * argv.size));
     var startTime = process.hrtime();
 
     db.get(id, function (err, entry) {
@@ -92,13 +92,12 @@ function bench(callback) {
           averageTime: Math.round(averageTime / 1e3) / 1e3
         });
       } else {
-        query();
+        setImmediate(query);
       }
     });
-  };
+  })();
 
   setTimeout(function() { stop = true; }, argv.duration);
-  query();
 };
 
 console.log('[ %s ]', db.name);
