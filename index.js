@@ -52,7 +52,7 @@ function generate(callback) {
       if (err) { errors++; }
       else     { inserted++; }
 
-      insert();
+      setImmediate(insert);
     });
   })();
 };
@@ -64,32 +64,42 @@ function bench(callback) {
   var maxTime     = 0;
   var minTime     = Infinity;
   var averageTime = 0;
+  var maxMemory   = 0;
+  var minMemory   = Infinity;
 
   (function query() {
     var id = 'identifier' + (Math.floor(Math.random() * argv.size));
     var startTime = process.hrtime();
+
+    var memoryUsage = process.memoryUsage().rss;
+    minMemory = Math.min(minMemory, memoryUsage);
+    maxMemory = Math.max(maxMemory, memoryUsage);
+
 
     db.get(id, function (err, entry) {
       var elapsed = process.hrtime(startTime);
       elapsed = elapsed[0] * 1e9 + elapsed[1];
 
       minTime = Math.min(minTime, elapsed);
-      maxTime = Math.max(minTime, elapsed);
+      maxTime = Math.max(maxTime, elapsed);
       averageTime = averageTime ? (averageTime + elapsed) / 2 : elapsed;
 
-      if (err) {
-        nbErrors++;
-      } else {
-        nbQueries++
-      }
+      if (err) { nbErrors++; }
+      else     { nbQueries++ }
 
       if (stop) {
         callback(null, {
           queries: nbQueries,
           errors: nbErrors,
-          minTime: Math.round(minTime / 1e3) / 1e3,
-          maxTime: Math.round(maxTime / 1e3) / 1e3,
-          averageTime: Math.round(averageTime / 1e3) / 1e3
+          time: {
+            min: Math.round(minTime / 1e3) / 1e3,
+            max: Math.round(maxTime / 1e3) / 1e3,
+            average: Math.round(averageTime / 1e3) / 1e3
+          },
+          memory: {
+            min: Math.round(minMemory / 1024 / 1024 * 100) / 100,
+            max: Math.round(maxMemory / 1024 / 1024 * 100) / 100
+          }
         });
       } else {
         setImmediate(query);
@@ -115,16 +125,20 @@ init(function () {
       console.log('Dataset');
       console.log('  Inserted: \t%d', res.inserted);
       console.log('  Failed: \t%d', res.errors);
-      console.log('  Loaded in: \t%dms', res.elapsed);
+      console.log('  Time: \t%dms', res.elapsed);
 
       console.log('Queries');
       console.log('  Successful: \t%d', result.queries);
       console.log('  Failed: \t%d', result.errors);
 
       console.log('Query time')
-      console.log('  Minimum : \t%dms', result.minTime);
-      console.log('  Maximum : \t%dms', result.maxTime);
-      console.log('  Average : \t%dms', result.averageTime);
+      console.log('  Minimum: \t%dms', result.time.min);
+      console.log('  Maximum: \t%dms', result.time.max);
+      console.log('  Average: \t%dms', result.time.average);
+
+      console.log('Memory usage')
+      console.log('  Minimum: \t%dMiB', result.memory.min);
+      console.log('  Maximum: \t%dMiB', result.memory.max);
     });
   });
 });
