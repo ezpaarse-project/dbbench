@@ -3,6 +3,12 @@ dbbench
 
 A basic benching tool to compare databases
 
+## Installation
+```bash
+  git clone https://github.com/ezpaarse-project/dbbench.git dbbench
+  cd dbbench
+  npm install
+```
 ## Usage
 
 ```javascript
