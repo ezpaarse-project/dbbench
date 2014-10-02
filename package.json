@@ -14,6 +14,7 @@
     "minimist": "^1.1.0",
     "nedb": "^0.11.1",
     "nosql": "^2.0.9",
+    "pouchdb": "^3.0.6",
     "tingodb": "^0.3.0",
     "underscore-db": "^0.8.0"
   }
