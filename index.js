@@ -76,6 +76,7 @@ function generate(callback) {
 function bench(callback) {
   var stop        = false;
   var nbQueries   = 0;
+  var nbNotFound  = 0;
   var nbErrors    = 0;
   var maxTime     = 0;
   var minTime     = Infinity;
@@ -100,13 +101,18 @@ function bench(callback) {
       maxTime = Math.max(maxTime, elapsed);
       averageTime = averageTime ? (averageTime + elapsed) / 2 : elapsed;
 
-      if (err) { nbErrors++; }
-      else     { nbQueries++ }
+      if (err) {
+        nbErrors++; }
+      else {
+        nbQueries++
+        if (!entry) { nbNotFound++; }
+      }
 
       if (stop) {
         callback(null, {
           queries: nbQueries,
           errors: nbErrors,
+          notFound: nbNotFound,
           time: {
             min: Math.round(minTime / 1e3) / 1e3,
             max: Math.round(maxTime / 1e3) / 1e3,
@@ -141,7 +147,7 @@ db.init(argv.options ? JSON.parse(argv.options) : {}, function (err) {
     elapsed = (elapsed[0] * 1e9 + elapsed[1]) / 1e6;
 
     var genMin = Math.floor(elapsed / 60000).toString();
-    var genSec = Math.floor(elapsed / 1000 % 60000).toString();
+    var genSec = Math.floor(elapsed % 60000 / 1000).toString();
     if (genMin.length == 1) { genMin = '0' + genMin; }
     if (genSec.length == 1) { genSec = '0' + genSec; }
 
@@ -153,7 +159,7 @@ db.init(argv.options ? JSON.parse(argv.options) : {}, function (err) {
       elapsed = process.hrtime(startTime);
       elapsed = (elapsed[0] * 1e9 + elapsed[1]) / 1e6;
       var benchMin = Math.floor(elapsed / 60000).toString();
-      var benchSec = Math.floor(elapsed / 1000 % 60000).toString();
+      var benchSec = Math.floor(elapsed % 60000 / 1000).toString();
       if (benchMin.length == 1) { benchMin = '0' + benchMin; }
       if (benchSec.length == 1) { benchSec = '0' + benchSec; }
 
@@ -167,7 +173,8 @@ db.init(argv.options ? JSON.parse(argv.options) : {}, function (err) {
       console.log('  Time: \t%s:%s', genMin, genSec);
 
       console.log('Queries');
-      console.log('  Successful: \t%d (%d per second)', result.queries, queriesPerSecond);
+      console.log('  Performed: \t%d (%d per second)', result.queries, queriesPerSecond);
+      console.log('  Not found: \t%d', result.notFound);
       console.log('  Failed: \t%d', result.errors);
 
       console.log('Queries time')
