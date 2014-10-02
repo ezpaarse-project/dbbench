@@ -4,13 +4,38 @@ var argv = require('minimist')(process.argv.slice(2), {
   alias: {
     b: ['database', 'db'],
     s: ['db-size', 'size'],
-    d: ['duration']
+    d: ['duration'],
+    l: ['db-list', 'list']
   },
   default: {
     s: 5000,
     d: 5
   }
 });
+
+
+
+if (argv.list) {
+  var path    = require('path');
+  var fs      = require('fs');
+  var plugDir = path.join(__dirname, 'plug');
+
+  fs.readdir(plugDir, function (err, items) {
+    if (err) { throw err; }
+
+    (function list() {
+      var item = items.pop();
+      if (!item) { return; }
+
+      fs.stat(path.join(plugDir, item), function (err, stat) {
+        if (err) { console.error(err); }
+        if (stat && stat.isDirectory()) { console.log(item); }
+        list();
+      });
+    })();
+  });
+  return;
+}
 
 if (!argv.db) {
   console.error('No database provided');
