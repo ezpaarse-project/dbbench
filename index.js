@@ -145,10 +145,16 @@ db.init(argv.options ? JSON.parse(argv.options) : {}, function (err) {
 
       var queriesPerSecond = Math.round(result.queries / argv.duration);
 
+      var min = Math.floor(res.elapsed / 60000).toString();
+      var sec = Math.floor(res.elapsed / 1000 % 60000).toString();
+
+      if (min.length == 1) { min = '0' + min; }
+      if (sec.length == 1) { sec = '0' + sec; }
+
       console.log('Dataset');
       console.log('  Inserted: \t%d', res.inserted);
       console.log('  Failed: \t%d', res.errors);
-      console.log('  Time: \t%d ms', res.elapsed);
+      console.log('  Time: \t%s:%s', min, sec);
 
       console.log('Queries');
       console.log('  Successful: \t%d (%d per second)', result.queries, queriesPerSecond);
