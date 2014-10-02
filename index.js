@@ -6,7 +6,8 @@ var argv = require('minimist')(process.argv.slice(2), {
     s: ['db-size', 'size'],
     d: ['duration'],
     o: ['options'],
-    l: ['db-list', 'list']
+    l: ['db-list', 'list'],
+    v: ['verbose']
   },
   default: {
     s: 5000,
@@ -65,8 +66,12 @@ function generate(callback) {
       city: faker.address.city(),
       country: faker.address.country()
     }, function (err) {
-      if (err) { errors++; }
-      else     { inserted++; }
+      if (err) {
+        errors++;
+        if (argv.verbose) { console.error(err); }
+      } else {
+        inserted++;
+      }
 
       setImmediate(insert);
     });
@@ -102,8 +107,9 @@ function bench(callback) {
       averageTime = averageTime ? (averageTime + elapsed) / 2 : elapsed;
 
       if (err) {
-        nbErrors++; }
-      else {
+        nbErrors++;
+        if (argv.verbose) { console.error(err); }
+      } else {
         nbQueries++
         if (!entry) { nbNotFound++; }
       }

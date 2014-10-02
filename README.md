@@ -22,3 +22,4 @@ A basic benching tool to compare databases
 * `[d][duration]` {Integer} bench duration in seconds (defaults to `5`).
 * `[o][options]` {JSON} database specific options, if available.
 * `[l][list][db-list]` list available database types.
+* `[v][verbose]` show errors when queries fail.
