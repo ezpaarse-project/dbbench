@@ -5,7 +5,7 @@ var db = {};
 
 exports.name = 'Memory';
 
-exports.init = function (callback) {
+exports.init = function (options, callback) {
   callback();
 };
 

@@ -9,7 +9,7 @@ var nosql;
 
 exports.name = 'NoSQL';
 
-exports.init = function (callback) {
+exports.init = function (options, callback) {
   fs.unlink(dbFile, function (err) {
     if (err && err.code != 'ENOENT') {
       callback(err);

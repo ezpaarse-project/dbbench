@@ -9,7 +9,7 @@ var db        = new Datastore({ filename: dbFile });
 
 exports.name = 'NeDB';
 
-exports.init = function (callback) {
+exports.init = function (options, callback) {
   fs.unlink(dbFile, function (err) {
     if (err && err.code != 'ENOENT') {
       callback(err);

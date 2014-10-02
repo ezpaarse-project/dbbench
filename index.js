@@ -5,6 +5,7 @@ var argv = require('minimist')(process.argv.slice(2), {
     b: ['database', 'db'],
     s: ['db-size', 'size'],
     d: ['duration'],
+    o: ['options'],
     l: ['db-list', 'list']
   },
   default: {
@@ -12,8 +13,6 @@ var argv = require('minimist')(process.argv.slice(2), {
     d: 5
   }
 });
-
-
 
 if (argv.list) {
   var path    = require('path');
@@ -46,10 +45,6 @@ var faker = require('faker');
 var db    = require('./plug/' + argv.db + '/index.js');
 
 var id = 0;
-
-function init(callback) {
-  db.init(callback);
-};
 
 function generate(callback) {
   var startTime = process.hrtime();
@@ -137,9 +132,10 @@ function bench(callback) {
 
 console.log('[ %s ]', db.name);
 console.log('Initializing database...');
-init(function () {
-  var startTime = process.hrtime();
+db.init(argv.options ? JSON.parse(argv.options) : {}, function (err) {
+  if (err) { throw err; }
 
+  var startTime = process.hrtime();
   console.log('Generating dataset...');
   generate(function (err, res) {
 
