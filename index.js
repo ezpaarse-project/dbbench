@@ -47,16 +47,12 @@ var db    = require('./plug/' + argv.db + '/index.js');
 var id = 0;
 
 function generate(callback) {
-  var startTime = process.hrtime();
   var inserted  = 0;
   var errors    = 0;
 
   (function insert() {
     if (id >= argv.size) {
-      var elapsed = process.hrtime(startTime);
-
       return callback(null, {
-        elapsed: Math.round((elapsed[0] * 1e9 + elapsed[1]) / 1e6),
         inserted: inserted,
         errors: errors
       });
@@ -130,6 +126,7 @@ function bench(callback) {
   setTimeout(function() { stop = true; }, argv.duration * 1000);
 };
 
+
 console.log('[ %s ]', db.name);
 console.log('Initializing database...');
 db.init(argv.options ? JSON.parse(argv.options) : {}, function (err) {
@@ -137,24 +134,37 @@ db.init(argv.options ? JSON.parse(argv.options) : {}, function (err) {
 
   var startTime = process.hrtime();
   console.log('Generating dataset...');
+
   generate(function (err, res) {
 
+    var elapsed = process.hrtime(startTime);
+    elapsed = (elapsed[0] * 1e9 + elapsed[1]) / 1e6;
+
+    var genMin = Math.floor(elapsed / 60000).toString();
+    var genSec = Math.floor(elapsed / 1000 % 60000).toString();
+    if (genMin.length == 1) { genMin = '0' + genMin; }
+    if (genSec.length == 1) { genSec = '0' + genSec; }
+
+    startTime = process.hrtime();
     console.log('Starting bench');
+
     bench(function (err, result) {
-      console.log('Bench finished\n');
+
+      elapsed = process.hrtime(startTime);
+      elapsed = (elapsed[0] * 1e9 + elapsed[1]) / 1e6;
+      var benchMin = Math.floor(elapsed / 60000).toString();
+      var benchSec = Math.floor(elapsed / 1000 % 60000).toString();
+      if (benchMin.length == 1) { benchMin = '0' + benchMin; }
+      if (benchSec.length == 1) { benchSec = '0' + benchSec; }
+
+      console.log('Bench finished in %d minutes and %d seconds\n', benchMin, benchSec);
 
       var queriesPerSecond = Math.round(result.queries / argv.duration);
-
-      var min = Math.floor(res.elapsed / 60000).toString();
-      var sec = Math.floor(res.elapsed / 1000 % 60000).toString();
-
-      if (min.length == 1) { min = '0' + min; }
-      if (sec.length == 1) { sec = '0' + sec; }
 
       console.log('Dataset');
       console.log('  Inserted: \t%d', res.inserted);
       console.log('  Failed: \t%d', res.errors);
-      console.log('  Time: \t%s:%s', min, sec);
+      console.log('  Time: \t%s:%s', genMin, genSec);
 
       console.log('Queries');
       console.log('  Successful: \t%d (%d per second)', result.queries, queriesPerSecond);
