@@ -9,7 +9,7 @@ exports.init = function (options, callback) {
   PouchDB.destroy('items', function (err) {
     if (err) { return callback(err); }
 
-    db = new PouchDB('items');
+    db = new PouchDB('items', options);
     callback();
   });
 };
