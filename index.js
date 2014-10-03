@@ -4,14 +4,15 @@ var argv = require('minimist')(process.argv.slice(2), {
   alias: {
     b: ['database', 'db'],
     s: ['db-size', 'size'],
-    d: ['duration'],
+    t: ['duration'],
     o: ['options'],
     l: ['db-list', 'list'],
-    v: ['verbose']
+    v: ['verbose'],
+    d: ['debug']
   },
   default: {
     s: 5000,
-    d: 5
+    t: 5
   }
 });
 
@@ -68,7 +69,7 @@ function generate(callback) {
     }, function (err) {
       if (err) {
         errors++;
-        if (argv.verbose) { console.error(err); }
+        if (argv.debug) { console.error(err); }
       } else {
         inserted++;
       }
@@ -108,10 +109,14 @@ function bench(callback) {
 
       if (err) {
         nbErrors++;
-        if (argv.verbose) { console.error(err); }
+        if (argv.debug) { console.error(err); }
       } else {
         nbQueries++
-        if (!entry) { nbNotFound++; }
+        if (entry) {
+          if (argv.verbose) { console.log(entry); }
+        } else {
+          nbNotFound++;
+        }
       }
 
       if (stop) {

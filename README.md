@@ -1,7 +1,7 @@
 dbbench
 =======
 
-A basic benching tool to compare databases
+A basic benching tool to compare node.js embedded databases. It inserts randomly generated objects with string identifiers, then queries random identifiers for a given period of time.
 
 ## Installation
 ```bash
@@ -19,7 +19,8 @@ A basic benching tool to compare databases
 
 * `[b][db][database]` {string} database type to bench (matching folder name in `plug` directory) [required].
 * `[s][size][db-size]` {Integer} number of entries to insert in the database (defaults to `5000`).
-* `[d][duration]` {Integer} bench duration in seconds (defaults to `5`).
+* `[t][duration]` {Integer} bench duration in seconds (defaults to `5`).
 * `[o][options]` {JSON} database specific options, if available.
 * `[l][list][db-list]` list available database types.
-* `[v][verbose]` show errors when queries fail.
+* `[d][debug]` show errors when queries (insert or find) fail.
+* `[v][verbose]` print entries that are successfuly found (not suitable for real benching).
