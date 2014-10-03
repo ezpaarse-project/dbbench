@@ -10,11 +10,14 @@
   "license": "MIT",
   "dependencies": {
     "faker": "^2.0.1",
+    "final-db": "^2.4.1",
     "lowdb": "^0.4.1",
     "minimist": "^1.1.0",
     "nedb": "^0.11.1",
     "nosql": "^2.0.9",
     "pouchdb": "^3.0.6",
+    "rimraf": "^2.2.8",
+    "taffydb": "^2.7.2",
     "tingodb": "^0.3.0",
     "underscore-db": "^0.8.0"
   }
