@@ -12,7 +12,7 @@ A basic benching tool to compare node.js embedded databases. It inserts randomly
 ## Usage
 
 ```javascript
-  node index.js --db=[String] [-sd]
+  node index.js --db=[String] [-stoldv]
 ```
 
 #### Options
