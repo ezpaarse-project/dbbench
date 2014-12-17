@@ -196,6 +196,8 @@ db.init(argv.options ? JSON.parse(argv.options) : {}, function (err) {
       console.log('Memory usage')
       console.log('  Minimum: \t%d MiB', result.memory.min);
       console.log('  Maximum: \t%d MiB', result.memory.max);
+
+      if (typeof db.close == 'function') { db.close(); }
     });
   });
 });
